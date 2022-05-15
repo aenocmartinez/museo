@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Src\museologo\infraestructure\repository;
 
+use Illuminate\Database\Eloquent\Model;
+
 use MuseologoRepository;
 use Src\museologo\domain\Campo;
 use Src\museologo\domain\CampoSimple;
@@ -11,8 +13,8 @@ use Src\museologo\domain\ColeccionCampo;
 use Src\museologo\domain\Secuencia;
 use Src\museologo\domain\Valor;
 
-class Consola implements MuseologoRepository {
-    
+class Museologo extends Model implements MuseologoRepository{
+        
     public function agregarSubcampo(Campo $campo, int $orden): bool {
         return false;
     }
