@@ -3,20 +3,30 @@ declare(strict_types=1);
 
 namespace Src\museologo\infraestructure\repository;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
-
-use MuseologoRepository;
 use Src\museologo\domain\Campo;
+use Src\museologo\domain\CampoCompuesto;
 use Src\museologo\domain\CampoSimple;
 use Src\museologo\domain\Coleccion;
 use Src\museologo\domain\ColeccionCampo;
+use Src\museologo\domain\MuseologoRepository;
 use Src\museologo\domain\Secuencia;
 use Src\museologo\domain\Valor;
+use Src\museologo\infraestructure\repository\eloquent\Campo as EloquentCampo;
 
-class Museologo extends Model implements MuseologoRepository{
-        
+class EloquentMuseologo extends Model implements MuseologoRepository {
+
     public function agregarSubcampo(Campo $campo, int $orden): bool {
-        return false;
+        try {
+            $subcampo = EloquentCampo::find($campo->getId());
+            if ($subcampo) {
+                $this->subcampos()->attach($subcampo);
+            }
+        } catch(Exception $e) {
+            throw $e->getMessage();
+        }
+        return true;
     }
     public function quitarSubcampo(Campo $campo): bool {
         return false;
@@ -25,7 +35,24 @@ class Museologo extends Model implements MuseologoRepository{
         return [];
     }
     public function crearCampo(Campo $campo): bool {
-        return false;
+        $resultado = true;
+        try {
+            $id = EloquentCampo::create([
+                'nombre' => $campo->getNombre(),
+                'descripcion' => $campo->getDescripcion(),
+                'abreviatura' => $campo->getAbreviatura(),
+            ]);
+
+            $campo->setId($id);
+
+            if ($campo->esCompuesto()) {
+                $this->agregarSubcampo($campo, 1);
+            }
+        } catch (Exception $e) {
+            echo "CrearCampo: " . $e->getMessage();
+            $resultado = false;
+        }
+        return $resultado;
     }
     public function eliminarCampo(Campo $campo): bool {
         return false;
@@ -34,6 +61,21 @@ class Museologo extends Model implements MuseologoRepository{
         return false;
     }
     public function listarCampos(): array {
+        try {
+            $rows = EloquentCampo::select('id', 'nombre', 'descripcion', 'abreviatura')->get();
+            foreach($rows as $row) {
+                $campo = new CampoSimple();
+                if ($row->esCompuesto()) {
+                    $campo = new CampoCompuesto();
+                }
+                $campo->setId($row->id);
+                $campo->setNombre($row->nombre);
+                $campo->setAbreviatura($row->abreviatura);
+                $campo->setDescripcion($row->descripcion);
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
         return [];
     }
     public function buscarCampo(int $campoId): Campo{
@@ -71,5 +113,9 @@ class Museologo extends Model implements MuseologoRepository{
     }
     public function asignarCaracteristicasAColeccionCampo(ColeccionCampo $campo): bool{
         return false;
+    }
+
+    public function esCompuesto(): bool {
+        return count($this->subcampos()) > 0;
     }
 }

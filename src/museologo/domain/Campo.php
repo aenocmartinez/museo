@@ -3,16 +3,25 @@ declare(strict_types=1);
 
 namespace Src\museologo\domain;
 
-use MuseologoRepository;
+use Brick\Math\BigInteger;
 
 abstract class Campo {
-    private string $nombre;
-    private string $descripcion;
-    private string $abreviatura;
+    protected BigInteger $id;
+    protected string $nombre;
+    protected string $descripcion;
+    protected string $abreviatura;
     protected MuseologoRepository $repository;
 
     public function setRepository(MuseologoRepository $repository): void {
         $this->repository = $repository;
+    }
+
+    public function setId(BigInteger $id): void {
+        $this->id = $id;
+    }
+
+    public function getId(): BigInteger {
+        return $this->id;
     }
 
     public function setNombre(string $nombre): void {

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Src\museologo\domain;
+
 use Src\museologo\domain\Campo;
 use Src\museologo\domain\Coleccion;
 use Src\museologo\domain\ColeccionCampo;
