@@ -10,7 +10,7 @@ use Src\museologo\domain\Secuencia;
 use Src\museologo\domain\Valor;
 
 interface MuseologoRepository {
-    public function agregarSubcampo(Campo $campo, int $orden): bool;
+    public function agregarSubcampo(Campo $campo, Campo $subcampo, int $orden): bool;
     public function quitarSubcampo(Campo $campo): bool;
     public function listarSubcampo(Campo $campo): array;
     public function crearCampo(Campo $campo): bool;

@@ -6,6 +6,7 @@ use Src\museologo\infraestructure\repository\EloquentMuseologo;
 use Src\museologo\usecase\CasoUsoListarCampos;
 use App\Http\Requests\RequestGuardarCampo;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ListaCampos;
 use Illuminate\Http\Request;
 use MuseologoRepository;
 use Src\museologo\usecase\CasoUsoCrearCampo;
@@ -14,10 +15,12 @@ class MuseologoController extends Controller
 {
     public function index()
     {
+        $data = [];
         $casoUso = new CasoUsoListarCampos(new EloquentMuseologo());
-        $campos = $casoUso->ejecutar();
+        $campos = $casoUso->ejecutar(); 
+        // return $campos;
         return response()->json([
-            'campos' => $campos
+            "data" => ListaCampos::collection($campos),
         ]);
     }
 

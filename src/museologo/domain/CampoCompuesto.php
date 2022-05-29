@@ -9,8 +9,8 @@ class CampoCompuesto extends Campo {
 
     private array $subcampos = [];
 
-    public function agregarSubcampo(Campo $campo, int $orden = 1): bool {
-        return $this->repository->agregarSubcampo($campo, $orden);
+    public function agregarSubcampo(Campo $subcampo, int $orden = 1): bool {
+        return $this->repository->agregarSubcampo($this, $subcampo, $orden);
     }
 
     public function quitarSubcampo(Campo $campo): bool {

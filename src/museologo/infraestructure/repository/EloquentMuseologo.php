@@ -18,14 +18,15 @@ use Src\museologo\infraestructure\repository\eloquent\Campo as EloquentCampo;
 
 class EloquentMuseologo extends Model implements MuseologoRepository {
 
-    public function agregarSubcampo(Campo $campo, int $orden): bool {
+    public function agregarSubcampo(Campo $campo, Campo $subcampo, int $orden): bool {
         try {
-            $subcampo = EloquentCampo::find($campo->getId());
-            if ($subcampo) {
-                $this->subcampos()->attach($subcampo);
+            $eloquentCampo = EloquentCampo::find($campo->getId());
+            $eloquentSubcampo = EloquentCampo::find($subcampo->getId());
+            if ($eloquentSubcampo) {
+                $eloquentCampo->subcampos()->attach($eloquentSubcampo, ['orden' => $orden]);
             }
         } catch(Exception $e) {
-            throw $e->getMessage();
+            echo $e->getMessage();
         }
         return true;
     }
@@ -38,16 +39,17 @@ class EloquentMuseologo extends Model implements MuseologoRepository {
     public function crearCampo(Campo $campo): bool {
         $resultado = true;
         try {
-            $id = EloquentCampo::create([
+            $nCampo = EloquentCampo::create([
                 'nombre' => $campo->getNombre(),
                 'descripcion' => $campo->getDescripcion(),
                 'abreviatura' => $campo->getAbreviatura(),
-            ]);
-
-            $campo->setId($id);
+            ]);            
 
             if ($campo->esCompuesto()) {
-                $this->agregarSubcampo($campo, 1);
+                $subcampo = new CampoSimple();
+                $subcampo->setId($nCampo->id);
+                $campo->setId($nCampo->id);
+                $campo->agregarSubcampo($subcampo, 1);
             }
         } catch (Exception $e) {
             echo "CrearCampo: " . $e->getMessage();
@@ -62,8 +64,9 @@ class EloquentMuseologo extends Model implements MuseologoRepository {
         return false;
     }
     public function listarCampos(): array {
+        $campos = array();
         try {
-            $rows = EloquentCampo::select('id', 'nombre', 'descripcion', 'abreviatura')->get();
+            $rows = EloquentCampo::select('id', 'nombre', 'descripcion', 'abreviatura')->orderBy('nombre')->get();
             foreach($rows as $row) {
                 $campo = new CampoSimple();
                 if ($row->esCompuesto()) {
@@ -73,11 +76,12 @@ class EloquentMuseologo extends Model implements MuseologoRepository {
                 $campo->setNombre($row->nombre);
                 $campo->setAbreviatura($row->abreviatura);
                 $campo->setDescripcion($row->descripcion);
+                array_push($campos, $campo);
             }
         } catch (Exception $e) {
             echo $e->getMessage();
         }
-        return [];
+        return $campos;
     }
     public function buscarCampo(int $campoId): Campo{
         return new CampoSimple();
