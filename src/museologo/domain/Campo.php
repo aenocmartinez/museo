@@ -6,7 +6,7 @@ namespace Src\museologo\domain;
 use Brick\Math\BigInteger;
 
 abstract class Campo {
-    protected BigInteger $id;
+    protected int $id;
     protected string $nombre;
     protected string $descripcion;
     protected string $abreviatura;
@@ -16,11 +16,11 @@ abstract class Campo {
         $this->repository = $repository;
     }
 
-    public function setId(BigInteger $id): void {
+    public function setId(int $id): void {
         $this->id = $id;
     }
 
-    public function getId(): BigInteger {
+    public function getId(): int {
         return $this->id;
     }
 

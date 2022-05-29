@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\museologo\infraestructure\repository;
 
+use Brick\Math\BigInteger;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Src\museologo\domain\Campo;
@@ -113,9 +114,5 @@ class EloquentMuseologo extends Model implements MuseologoRepository {
     }
     public function asignarCaracteristicasAColeccionCampo(ColeccionCampo $campo): bool{
         return false;
-    }
-
-    public function esCompuesto(): bool {
-        return count($this->subcampos()) > 0;
     }
 }
