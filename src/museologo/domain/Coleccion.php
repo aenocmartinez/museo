@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Src\museologo\domain;
 
-use MuseologoRepository;
+use Src\museologo\domain\repositories\ColeccionRepository;
 
 class Coleccion {
-    private MuseologoRepository $repository;
+    private ColeccionRepository $repository;
     private string $nombre;
 
-    public function setRepository(MuseologoRepository $repository): void {
+    public function setRepository(ColeccionRepository $repository): void {
         $this->repository = $repository;
     }
 
@@ -19,6 +19,10 @@ class Coleccion {
 
     public function getNombre(): string {
         return $this->nombre;
+    }
+
+    public function crear(): bool {
+        return $this->repository->crearColeccion($this);
     }
 
     public function agregarCampo(Campo $campo, int $orden=1): bool {

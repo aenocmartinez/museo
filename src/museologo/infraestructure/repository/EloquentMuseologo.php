@@ -15,6 +15,7 @@ use Src\museologo\domain\MuseologoRepository;
 use Src\museologo\domain\Secuencia;
 use Src\museologo\domain\Valor;
 use Src\museologo\infraestructure\repository\eloquent\Campo as EloquentCampo;
+use Src\museologo\infraestructure\repository\eloquent\Coleccion as EloquentColeccion;
 
 class EloquentMuseologo extends Model implements MuseologoRepository {
 
@@ -118,5 +119,16 @@ class EloquentMuseologo extends Model implements MuseologoRepository {
     }
     public function asignarCaracteristicasAColeccionCampo(ColeccionCampo $campo): bool{
         return false;
+    }
+
+    public function crearColeccion(Coleccion $coleccion): bool {
+        $exito = false;
+        try {
+            EloquentColeccion::create($coleccion->getNombre());
+            $exito = true;
+        } catch(Exception $e) {
+            echo $e->getMessage();            
+        }
+        return $exito;
     }
 }

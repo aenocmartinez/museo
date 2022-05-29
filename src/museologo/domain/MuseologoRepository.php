@@ -29,4 +29,5 @@ interface MuseologoRepository {
     public function quitarCampoAColeccion(Coleccion $coleccion, ColeccionCampo $campo): bool;
     public function listarCamposColeccion(Coleccion $coleccion): array;
     public function asignarCaracteristicasAColeccionCampo(ColeccionCampo $campo): bool;
+    public function crearColeccion(Coleccion $coleccion): bool;
 }
